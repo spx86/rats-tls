@@ -1,6 +1,12 @@
 # Project name
 project(verifier_nullverifier)
 
+if(FISCO)
+	list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/../../include
+							 ${CMAKE_CURRENT_SOURCE_DIR}/../../include/fisco
+							 ${LIBBCOS_C_SDK_INC_PATH}
+							 )
+endif()
 # Set include directory
 include_directories(${INCLUDE_DIRS})
 
@@ -8,6 +14,9 @@ include_directories(${INCLUDE_DIRS})
 set(LIBRARY_DIRS ${CMAKE_BINARY_DIR}/src
                  ${RATS_TLS_INSTALL_LIB_PATH}
                  )
+if(FISCO)
+	list(APPEND LIBRARY_DIRS ${LIBBCOS_C_SDK_LIB_PATH})
+endif()
 link_directories(${LIBRARY_DIRS})
 
 # Set source file

@@ -28,6 +28,9 @@
 #include <sgx_dcap_quoteverify.h>
 #endif
 // clang-format on
+#ifdef FISCO
+#include <fisco/crud.h>
+#endif
 
 #ifdef SGX
 
@@ -162,6 +165,9 @@ static enclave_verifier_err_t ecdsa_verify_evidence(enclave_verifier_ctx_t *ctx,
 	/* Check verification result */
 	switch (quote_verification_result) {
 	case SGX_QL_QV_RESULT_OK:
+#ifdef FISCO
+		RTLS_INFO("Verification results on-chain (FISCO BCOS).\n");
+#endif
 		RTLS_INFO("verification completed successfully.\n");
 		err = ENCLAVE_VERIFIER_ERR_NONE;
 		break;
@@ -374,6 +380,9 @@ sgx_ecdsa_verify_evidence(enclave_verifier_ctx_t *ctx, attestation_evidence_t *e
 	/* Check verification result */
 	switch (quote_verification_result) {
 	case SGX_QL_QV_RESULT_OK:
+#ifdef FISCO
+		RTLS_INFO("Verification results on-chain (FISCO BCOS).\n");
+#endif
 		RTLS_INFO("verification completed successfully.\n");
 		err = ENCLAVE_VERIFIER_ERR_NONE;
 		break;

@@ -97,6 +97,12 @@ static int sgx_create_report(sgx_report_t *report)
 }
 #endif
 // clang-format on
+#ifdef FISCO
+#include <fisco/crud.h>
+
+
+
+#endif
 
 #ifdef SGX
 int rats_tls_server_startup(rats_tls_log_level_t log_level, char *attester_type,

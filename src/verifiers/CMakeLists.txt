@@ -28,3 +28,7 @@ endif()
 if(SGX)
     add_subdirectory(sgx-la)
 endif()
+
+if(FISCO)
+	add_subdirectory(fisco)
+endif()

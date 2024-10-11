@@ -8,6 +8,12 @@ list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}
 if(OCCLUM)
     list(APPEND INCLUDE_DIRS ${SGXSDK_INSTALL_INCLUDE_PATH})
 endif()
+if(FISCO)
+	list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/../../include 
+							 ${CMAKE_CURRENT_SOURCE_DIR}/../../include/fisco 
+							 ${LIBBCOS_C_SDK_INC_PATH}
+							 )
+endif()
 include_directories(${INCLUDE_DIRS})
 
 # Set dependency library directory
@@ -18,6 +24,10 @@ set(LIBRARY_DIRS ${CMAKE_BINARY_DIR}/src
 if(OCCLUM)
     list(APPEND LIBRARY_DIRS ${SGXSDK_INSTALL_LIB_PATH})
 endif()
+if(FISCO)
+	list(APPEND LIBRARY_DIRS ${LIBBCOS_C_SDK_LIB_PATH})
+endif()
+
 link_directories(${LIBRARY_DIRS})
 
 # Set extra link library

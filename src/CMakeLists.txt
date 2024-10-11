@@ -18,6 +18,10 @@ if(SGX)
     add_subdirectory(sgx)
 endif()
 
+#if(FISCO)
+#    add_subdirectory(fisco)
+#endif()
+
 # Add third party library required by crypto_wrappers and tls_wrappers
 if(SGX)
     list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/external/sgx-ssl/intel-sgx-ssl/src/intel-sgx-ssl/Linux/package/include)
@@ -26,6 +30,14 @@ add_subdirectory(crypto_wrappers)
 add_subdirectory(tls_wrappers)
 
 list(APPEND INCLUDE_DIRS ${LIBCBOR_INC_PATH})
+
+if(FISCO)
+    list(APPEND INCLUDE_DIRS ${LIBBCOS_C_SDK_INC_PATH}
+		#							 ${LIBJSON_INC_PATH} 
+#							 /usr/include
+#							 ${CMAKE_CURRENT_SOURCE_DIR}/include/fisco
+							 )
+endif()
 
 include_directories(${INCLUDE_DIRS})
 
@@ -72,6 +84,12 @@ if(SGX)
                         ${CMAKE_CURRENT_SOURCE_DIR}/sgx/trust/sgx_dummy.c
                         )
 endif()
+#if(FISCO)
+#    list(APPEND SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/verifiers/fisco/crud.c
+#                        ${CMAKE_CURRENT_SOURCE_DIR}/verifiers/fisco/p256.c
+#                        ${CMAKE_CURRENT_SOURCE_DIR}/verifiers/fisco/did.c
+#                        )
+#endif()
 
 # Static library dependencies
 if(SGX)
@@ -90,6 +108,20 @@ if(SGX)
                             verifier_sgx_la
                             libcbor
                             )
+	if(FISCO)
+		list( APPEND DEPEND_TRUSTED_LIBS bcos-c-sdk
+										 verifier_fisco
+										 #				 libjson-c
+										 )
+	endif()
+endif()
+
+if(FISCO)
+	set(DEPEND_FISCO_LIBS bcos-c-sdk
+						  verifier_fisco
+						  libcbor
+						  #						  libjson-c
+						  )
 endif()
 
 # Generate library
@@ -97,9 +129,16 @@ if(SGX)
     add_trusted_library(${RTLS_LIB} SRCS ${SOURCES})
     add_dependencies(${RTLS_LIB} ${DEPEND_TRUSTED_LIBS})
 else()
-    add_library(${RTLS_LIB} SHARED ${SOURCES})
-    target_link_libraries(${RTLS_LIB} ${RATS_TLS_LDFLAGS} cbor)
-    set_target_properties(${RTLS_LIB} PROPERTIES VERSION ${VERSION} SOVERSION ${VERSION_MAJOR})
+	if(FISCO)
+    	add_library(${RTLS_LIB} SHARED ${SOURCES}) 
+		#		add_dependencies(${RTLS_LIB} ${DEPEND_FISCO_LIBS})
+		target_link_libraries(${RTLS_LIB} ${RATS_TLS_LDFLAGS} cbor bcos-c-sdk-static verifier_fisco)
+		set_target_properties(${RTLS_LIB} PROPERTIES VERSION ${VERSION} SOVERSION ${VERSION_MAJOR})
+	else()
+    	add_library(${RTLS_LIB} SHARED ${SOURCES}) 
+   		target_link_libraries(${RTLS_LIB} ${RATS_TLS_LDFLAGS} cbor)
+    	set_target_properties(${RTLS_LIB} PROPERTIES VERSION ${VERSION} SOVERSION ${VERSION_MAJOR})
+	endif()
 endif()
 
 # Install lib
@@ -118,7 +157,9 @@ set(RTLS_INCLUDE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/rats-tls/api.h
                        ${CMAKE_CURRENT_SOURCE_DIR}/include/rats-tls/sgx.h
                        ${CMAKE_CURRENT_SOURCE_DIR}/include/rats-tls/tls_wrapper.h
                        ${CMAKE_CURRENT_SOURCE_DIR}/include/rats-tls/hash.h
+					   #                      ${CMAKE_CURRENT_SOURCE_DIR}/include/fisco/crud.h
                        )
 install(DIRECTORY DESTINATION ${RATS_TLS_INSTALL_INCLUDE_PATH})
 install(FILES ${RTLS_INCLUDE_FILES}
 DESTINATION ${RATS_TLS_INSTALL_INCLUDE_PATH})
+

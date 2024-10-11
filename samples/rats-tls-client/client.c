@@ -17,6 +17,10 @@
 #include <rats-tls/log.h>
 #include <rats-tls/claim.h>
 
+#ifdef FISCO
+#include <fisco/crud.h>
+#endif
+
 #define DEFAULT_PORT 1234
 #define DEFAULT_IP   "127.0.0.1"
 
@@ -78,6 +82,10 @@ int rats_tls_client_startup(rats_tls_log_level_t log_level, char *attester_type,
 						   crypto_type, flags, s_ip, s_port, verdictd);
 	if (sgx_status != SGX_SUCCESS || ret)
 		RTLS_ERR("failed to startup client: sgx status %#x return %#x\n", sgx_status, ret);
+	
+	#ifdef FISCO
+	destory_sdk();
+	#endif
 
 	return ret;
 }
@@ -226,12 +234,20 @@ int rats_tls_client_startup(rats_tls_log_level_t log_level, char *attester_type,
 	ret = rats_tls_cleanup(handle);
 	if (ret != RATS_TLS_ERR_NONE)
 		RTLS_ERR("Failed to cleanup %#x\n", ret);
+	
+	#ifdef FISCO
+	tee_table_handle("select");
+	destory_sdk();
+	#endif
 
 	return ret;
 
 err:
 	/* Ignore the error code of cleanup in order to return the prepositional error */
 	rats_tls_cleanup(handle);
+	#ifdef FISCO
+	destory_sdk();
+	#endif
 
 	return -1;
 }
@@ -247,7 +263,7 @@ int main(int argc, char **argv)
 	printf("    \033[91mWelcome to RATS-TLS sample client\033[0m\n");
 #endif
 
-	char *const short_options = "a:v:t:c:mel:i:p:DEh";
+	char *const short_options = "a:v:t:c:mel:i:p:b:DEh";
 	// clang-format off
 	struct option long_options[] = {
 		{ "attester", required_argument, NULL, 'a' },
@@ -261,6 +277,9 @@ int main(int argc, char **argv)
 		{ "port", required_argument, NULL, 'p' },
 		{ "debug-enclave", no_argument, NULL, 'D' },
 		{ "verdictd", no_argument, NULL, 'E' },
+		#ifdef FISCO
+		{ "blockchain", required_argument, NULL, 'b' },
+		#endif
 		{ "help", no_argument, NULL, 'h' },
 		{ 0, 0, 0, 0 }
 	};
@@ -278,6 +297,9 @@ int main(int argc, char **argv)
 	bool debug_enclave = false;
 	bool verdictd = false;
 	int opt;
+	#ifdef FISCO
+	char* config_file = "";
+	#endif
 
 	do {
 		opt = getopt_long(argc, argv, short_options, long_options, NULL);
@@ -326,6 +348,11 @@ int main(int argc, char **argv)
 		case 'E':
 			verdictd = true;
 			break;
+		#ifdef FISCO
+		case 'b':
+			config_file = optarg;
+			break;
+		#endif
 		case -1:
 			break;
 		case 'h':
@@ -343,6 +370,9 @@ int main(int argc, char **argv)
 			     "        --port/-p             set the listening tcp port\n"
 			     "        --debug-enclave/-D    set to enable enclave debugging\n"
 			     "        --verdictd/-E         set to connect verdictd based on EAA protocol\n"
+				 #ifdef FISCO
+				 "		--blockchain/-b	 set the blockchain config file\n"
+				 #endif
 			     "        --help/-h             show the usage\n");
 			exit(1);
 		default:
@@ -352,7 +382,13 @@ int main(int argc, char **argv)
 
 	global_log_level = log_level;
 
+	#ifdef FISCO
+	init(config_file);
+	get_data();
+	#endif
+
 	return rats_tls_client_startup(log_level, attester_type, verifier_type, tls_type,
 				       crypto_type, mutual, provide_endorsements, debug_enclave,
 				       srv_ip, port, verdictd);
 }
+

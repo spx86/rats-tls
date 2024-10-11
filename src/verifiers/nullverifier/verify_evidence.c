@@ -6,7 +6,9 @@
 
 #include <rats-tls/log.h>
 #include <rats-tls/verifier.h>
-
+#ifdef FISCO
+#include <fisco/crud.h>
+#endif
 enclave_verifier_err_t nullverifier_verify_evidence(enclave_verifier_ctx_t *ctx,
 						    attestation_evidence_t *evidence, uint8_t *hash,
 						    __attribute__((unused)) unsigned int hash_len,
@@ -14,6 +16,9 @@ enclave_verifier_err_t nullverifier_verify_evidence(enclave_verifier_ctx_t *ctx,
 {
 	RTLS_DEBUG("ctx %p, evidence %p, hash %p endorsements %p\n", ctx, evidence, hash,
 		   endorsements);
-
+	
+	#ifdef FISCO
+	tee_table_handle("insert");	
+	#endif
 	return ENCLAVE_VERIFIER_ERR_NONE;
 }

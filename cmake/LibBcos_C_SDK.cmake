@@ -1,0 +1,28 @@
+project(bcos-c-sdk)
+
+include(ExternalProject)
+
+set(LIBBCOS_C_SDK_ROOT        ${CMAKE_BINARY_DIR}/external/bcos-c-sdk)
+set(LIBBCOS_C_SDK_SRC_PATH    ${LIBBCOS_C_SDK_ROOT}/src/bcos-c-sdk)
+set(LIBBCOS_C_SDK_LIB_PATH    ${LIBBCOS_C_SDK_SRC_PATH}/lib)
+set(LIBBCOS_C_SDK_INC_PATH    ${LIBBCOS_C_SDK_SRC_PATH}/include/)
+set(LIBBCOS_C_SDK_LIB_FILES   ${LIBBCOS_C_SDK_LIB_PATH}/libbcos-c-sdk-static.a)
+
+set(LIBBCOS_C_SDK_URL         https://gitee.com/FISCO-BCOS/bcos-c-sdk.git)
+
+set(LIBBCOS_C_SDK_UPDATE_SUBMODULES cd ${LIBBCOS_C_SDK_SRC_PATH} && git submodule update --init --recursive)
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+set(LIBBCOS_C_SDK_CONFIGURE   cd ${LIBBCOS_C_SDK_SRC_PATH} && cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX=${LIBBCOS_C_SDK_SRC_PATH} -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_C_FLAGS=${CMAKE_C_FLAGS} -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS} -DCBOR_PRETTY_PRINTER=OFF -DBUILD_SAMPLE=ON  .)
+set(LIBBCOS_C_SDK_MAKE        cd ${LIBBCOS_C_SDK_SRC_PATH} && make)
+set(LIBBCOS_C_SDK_INSTALL     cd ${LIBBCOS_C_SDK_SRC_PATH} && make install)
+
+ExternalProject_Add(${PROJECT_NAME}
+        GIT_REPOSITORY          ${LIBBCOS_C_SDK_URL}
+        GIT_TAG                 eb5eb3cf3ff7fee807715f0bb14fe84b5c2f75cb
+        PREFIX                  ${LIBBCOS_C_SDK_ROOT}
+		UPDATE_COMMAND          ${LIBBCOS_C_SDK_UPDATE_SUBMODULES}
+        CONFIGURE_COMMAND       ${LIBBCOS_C_SDK_CONFIGURE}
+        BUILD_COMMAND           ${LIBBCOS_C_SDK_MAKE}
+        INSTALL_COMMAND         ${LIBBCOS_C_SDK_INSTALL}
+)

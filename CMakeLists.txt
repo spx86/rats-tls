@@ -20,6 +20,7 @@ option(BUILD_SAMPLES "Compile sample code along with libraries" ON)
 option(SGX_HW "Run SGX on hardware, OFF for simulation" ON)
 option(SGX_LVI_MITIGATION "Mitigation flag, default on" ON)
 option(BUILD_FUZZ "Use lib-fuzzer to fuzz the code, default OFF" OFF)
+option(BUILD_FISCO "Run Fisco Bcos" OFF)
 
 # Define build mode
 set(RATS_TLS_BUILD_MODE "host"
@@ -61,6 +62,12 @@ else()
     message(FATAL_ERROR "Invalid build mode!")
 endif()
 
+if(BUILD_FISCO)
+    set(FISCO 1)
+    add_definitions(-DFISCO)
+endif()
+
+
 # Default build type
 set(RATS_TLS_BUILD_TYPE "debug"
     CACHE STRING "Select build type for rats-tls(debug|prerelease|release)"
@@ -89,10 +96,19 @@ endif()
 # Include custom modules
 include(CustomInstallDirs)
 include(CompilerOptions)
+
+if(SGX OR FISCO)
+	include(LibCBOR)
+endif()
+
 if(SGX)
     include(SGXCommon)
     include(SGXSSL)
-    include(LibCBOR)
+endif()
+
+if(FISCO)
+    include(LibBcos_C_SDK)
+	#	include(LibJSONC)
 endif()
 
 # Subdirectory
@@ -118,3 +134,4 @@ if(NOT TARGET uninstall)
   add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 endif()
+

@@ -1,4 +1,4 @@
-# Project name
+#Project name
 project(rats-tls-server)
 
 if(NOT SGX)
@@ -46,6 +46,12 @@ else()
     set(LIBRARY_DIRS ${RATS_TLS_INSTALL_LIB_PATH})
 endif()
 
+if(FISCO)
+	list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/../../src/include
+ 					 		 ${CMAKE_CURRENT_SOURCE_DIR}/../../src/include/fisco
+							 ${LIBBCOS_C_SDK_INC_PATH}
+                  )
+endif()
 include_directories(${INCLUDE_DIRS})
 link_directories(${LIBRARY_DIRS})
 

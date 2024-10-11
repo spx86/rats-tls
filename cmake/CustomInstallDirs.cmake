@@ -16,6 +16,9 @@ set(RATS_TLS_INSTALL_LIBV_PATH "${RATS_TLS_INSTALL_LIB_PATH}/verifiers")
 # rats_tls/tls-wrappers
 set(RATS_TLS_INSTALL_LIBTW_PATH "${RATS_TLS_INSTALL_LIB_PATH}/tls-wrappers")
 
+# rats_tls/fisco
+set(RATS_TLS_INSTALL_LIBBCOS_PATH "${RATS_TLS_INSTALL_LIB_PATH}/fisco")
+
 # include/rats_tls
 set(RATS_TLS_INSTALL_INCLUDE_PATH "${RATS_TLS_INSTALL_PATH}/include/rats-tls")
 
@@ -34,3 +37,9 @@ set(SGXSDK_INSTALL_LIB_PATH "${SGXSDK_INSTALL_PATH}/lib64")
 
 # sgx sdk include
 set(SGXSDK_INSTALL_INCLUDE_PATH "${SGXSDK_INSTALL_PATH}/include")
+
+# bcos c sdk library
+set(BCOS_C_SDK_INSTALL_LIB_PATH "${LIBBCOS_C_SDK_LIB_PATH}")
+
+# bcos c sdk include
+set(BCOS_C_SDK_INCLUDE_PATH "${LIBBCOS_C_SDK_INC_PATH}")

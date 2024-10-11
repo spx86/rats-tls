@@ -6,6 +6,14 @@ list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 if(OCCLUM)
     list(APPEND INCLUDE_DIRS ${SGXSDK_INSTALL_INCLUDE_PATH})
 endif()
+message("BCOS_C_SDK_INCLUDE_PATH  out= ${LIBBCOS_C_SDK_INC_PATH}")
+if(FISCO)
+	message("BCOS_C_SDK_INCLUDE_PATH = ${BCOS_C_SDK_INCLUDE_PATH}")
+	list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/../../include
+							 ${LIBBCOS_C_SDK_INC_PATH}
+                             /usr/include
+							 )
+endif()
 include_directories(${INCLUDE_DIRS})
 
 # Set dependency library directory
@@ -14,6 +22,9 @@ set(LIBRARY_DIRS ${CMAKE_BINARY_DIR}/src
                  )
 if(OCCLUM)
     list(APPEND LIBRARY_DIRS ${SGXSDK_INSTALL_LIB_PATH})
+endif()
+if(FISCO)
+    list(APPEND LIBRARY_DIRS ${LIBBCOS_C_SDK_LIB_PATH})
 endif()
 link_directories(${LIBRARY_DIRS})
 

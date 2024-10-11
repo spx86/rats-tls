@@ -46,6 +46,17 @@ else()
     set(LIBRARY_DIRS ${RATS_TLS_INSTALL_LIB_PATH})
 endif()
 
+#if(FISCO)
+#	include(LibBcos_C_SDK)
+#	list( APPEND INCLUDE_DIRS ${LIBCBOR_INC_PATH}
+#							  ${LIBBCOS_C_INC_PATH}
+#							  )
+#	list( APPEND LIBRARY_DIRS ${LIBCBOR_LIB_PATH}
+#							  ${LIBBCOS_C_LIB_PATH}
+#							  )
+#endif()
+	
+
 include_directories(${INCLUDE_DIRS})
 link_directories(${LIBRARY_DIRS})
 
