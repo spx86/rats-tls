@@ -1,0 +1,10 @@
+{
+  "contractAddr": "0xe1b84951839b2974c7429a6442fddcfc76bd93b8",
+  "abi": "/home/admin/inclavare-containers/rats-tls/rats-tls-fisco/bcos-c-sdk/build/sample/test/config/contract/RemotestatusABI.json",
+  "smCrypto": 0,
+  "configIni": "/home/admin/inclavare-containers/rats-tls/rats-tls-fisco/bcos-c-sdk/build/sample/test/config/config.ini",
+  "groupId": "group0",
+  "pk_path": "/home/admin/inclavare-containers/rats-tls/rats-tls-fisco/bcos-c-sdk/build/sample/test/config/public/public_key.pem",
+  "sk_path": "/home/admin/inclavare-containers/rats-tls/rats-tls-fisco/bcos-c-sdk/build/sample/test/config/private/private_key.pem",
+  "sign_path": "/home/admin/inclavare-containers/rats-tls/rats-tls-fisco/bcos-c-sdk/build/sample/test/config/signature"
+}
