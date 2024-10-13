@@ -236,7 +236,6 @@ int rats_tls_client_startup(rats_tls_log_level_t log_level, char *attester_type,
 		RTLS_ERR("Failed to cleanup %#x\n", ret);
 	
 	#ifdef FISCO
-	tee_table_handle("select");
 	destory_sdk();
 	#endif
 

@@ -340,6 +340,12 @@ char* format_sign_data(){
 	int needed_size = snprintf(NULL, 0,
 		"%s%s%s%s%s%s",
 		table.id, table.name, table.status, table.owner, table.last_update, table.pk) + 1;
+    formatted_string = malloc(needed_size);
+   	if (formatted_string == NULL) {
+        // 如果内存分配失败，返回 NULL
+        printf("Failed to allocate memory for formatted string\n");
+        return NULL;
+    }
 	sprintf(formatted_string,
 		"%s%s%s%s%s%s",
 		 table.id, table.name, table.status, table.owner, table.last_update, table.pk);
@@ -365,13 +371,13 @@ void get_data(){
     }
 	char* pk= read_public_key_hex(blockchain_config.config.pk_path);
 	table.id = pk;
+	table.pk = pk;
+	table.owner = pk;
 	char* formatted_string = format_sign_data();
     table.p256_sign=sign(formatted_string,  \
                          blockchain_config.config.sk_path, \
                          blockchain_config.config.sign_path, \
                          blockchain_config.config.pk_path);
-	table.owner=pk;
-    table.pk=pk;
 	printf("get data successfully\n");
 }
 
